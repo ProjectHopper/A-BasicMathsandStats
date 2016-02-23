@@ -1,5 +1,8 @@
 Matrices
-Creating a matrix
+=======================
+
+
+#### Creating a matrix
 Matrices can be created using the matrix() command. 
 
 The arguments to be supplied are 
@@ -7,6 +10,7 @@ The arguments to be supplied are
 2.	dimensions of the matrix, specifying either the numbers of rows or columns.
 Additionally you can specify if the values are to be allocated by row or column. By default they are allocated by column.
  
+<pre><code>
 Vec1 = c(1,4,5,6,4,5,5,7,9)  # 9 elements
  
 A = matrix(Vec1,nrow=3)      #3 by 3 matrix, assigned by column.
@@ -17,11 +21,11 @@ A
 # [1,]    1    6    5
 # [2,]    4    4    7
 # [3,]    5    5    9
-
-
+</code></pre>
 
 Notice how the rows and column are preceded with row and column indexes. To assign by row, we must specify it by setting the appropriate argument accordingly.
- 
+
+<pre><code> 
 #3 by 3 matrix. Values assigned by row.
 C= matrix(  c(1,6,7,0.6,0.5,0.3,1,2,1), ncol=3 , byrow =TRUE)
 
@@ -30,22 +34,22 @@ C
 [1,]  1.0  6.0  7.0
 [2,]  0.6  0.5  0.3
 [3,]  1.0  2.0  1.0
+</code></pre>
 
-
-
-
-Accessing Rows and Columns
+#### Accessing Rows and Columns
 Particular rows and columns of a data object (matrix as well as other objects such as data frames) can be accessed by specifying the row number or column number, leaving the other value blank.
 
+<pre><code>
 A[1,]   # access first row of A
 #[1] 1 6 5
 
 C[,2]   # access second column of C
 #[1] 6.0 0.5 2.0
+</code></pre>
 
 Naturally - particular elements may be accessed by specifying the row number and column number 
 
-
+<pre><code>
 A[1,1]   
 # [1] 1
 
@@ -58,15 +62,12 @@ iris[2,]
 iris[2,3]
 
 mtcars[2:5,4:6]
+</pre></code>
 
-
-
- 
-
-Addition and subtractions
+#### Addition and subtractions
 For matrices, addition and subtraction works on an element-wise basis. 
 The first elements of the respective matrices are added, and so on.
-
+<pre><code>
 A+C                                             
 
 #     [,1] [,2] [,3]
@@ -80,8 +81,8 @@ A-C
 #[1,]  0.0  0.0 -2.0
 #[2,]  3.4  3.5  6.7
 #[3,]  4.0  3.0  8.0
-
-Matrix Multiplication
+</code></pre>
+#### Matrix Multiplication
 
 To multiply matrices, we require a special operator for matrices; “%*%”. 
 
@@ -207,10 +208,10 @@ colSums(A)                                            Returns vector of column m
 
 
 
-Using rbind() and cbind()
+#### Using rbind() and cbind()
 Another methods of creating a matrix is to “bind” a number of vectors together, either by row or by column. The commands are rbind() and cbind() respectively.
 
-
+<pre><code>
 > x1 =c(1,2) ; x2 = c(3,8)                                                
 
 > D= rbind(x1,x2)
@@ -225,17 +226,18 @@ Another methods of creating a matrix is to “bind” a number of vectors togeth
 
 [1] 2
 
-
+</code></pre>
  
 
-Solving a System of Linear Equations
+#### Solving a System of Linear Equations
 
 To solve a system of linear equations in the form Ax=b , where A is a square matrix, and b is a column vector of known values, we use the solve() command to determine the values of the unknown vector x.
 
-
+<pre><code>
 b=vec2  # from before
 
-solve(A, b) 
+solve(A, b)
+</code></pre>
 
 
 
