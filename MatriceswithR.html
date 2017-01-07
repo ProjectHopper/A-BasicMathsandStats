@@ -1,13 +1,15 @@
-Matrices
+<h3>Matrices</h3>
 =======================
 
 
-#### Creating a matrix
+<h4>Creating a matrix</h4>
 Matrices can be created using the matrix() command. 
 
 The arguments to be supplied are 
-1.	vector of values to be entered.
-2.	dimensions of the matrix, specifying either the numbers of rows or columns.
+<ol>
+<li>	vector of values to be entered.</li>
+<li>	dimensions of the matrix, specifying either the numbers of rows or columns.</li>
+</ol>
 Additionally you can specify if the values are to be allocated by row or column. By default they are allocated by column.
  
 <pre><code>
@@ -64,7 +66,7 @@ iris[2,3]
 mtcars[2:5,4:6]
 </pre></code>
 
-#### Addition and subtractions
+<h4> Addition and subtractions</h4>
 For matrices, addition and subtraction works on an element-wise basis. 
 The first elements of the respective matrices are added, and so on.
 <pre><code>
@@ -103,7 +105,7 @@ This type of operation is very useful as a substitute for “for” loops on man
 
 
 
-Basic Matrix Calculations
+<h4>Basic Matrix Calculations</h4>
 
 1) Inverting a matrix 
 
@@ -132,7 +134,7 @@ To find the dimensions of matrix A, we use the dim() command
 
 To compute the transpose of matrix A, we use the command t().
 
-
+<pre><code>
 det(C)
 #[1] 3
 
@@ -143,7 +145,7 @@ t(C)
 [1,]    1  0.6    1
 [2,]    6  0.5    2
 [3,]    7  0.3    1
-
+</code></pre>
 5) Cross Products and Kronecker Product
 
 We can compute cross products using the crossprod() command. The Kronecker product ( a very useful command in numerical computation) is also easily implementable using the kronecker() command.
@@ -151,7 +153,7 @@ crossprod(A,C)
 kronecker(A,C)
 kronecker(C,A)
 
-Diagonals and the Identity Matrix
+<h4>Diagonals and the Identity Matrix</h4>
 
 The diag() command is a very versatile function for using matrices.
 
@@ -229,7 +231,7 @@ Another methods of creating a matrix is to “bind” a number of vectors togeth
 </code></pre>
  
 
-#### Solving a System of Linear Equations
+<h4> Solving a System of Linear Equations</h4>
 
 To solve a system of linear equations in the form Ax=b , where A is a square matrix, and b is a column vector of known values, we use the solve() command to determine the values of the unknown vector x.
 
