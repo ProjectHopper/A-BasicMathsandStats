@@ -1,0 +1,52 @@
+C. Paired t-tests
+There are many experimental settings where each subject in the study is in both the treatment and control group. For example, in a matched pairs design, subjects are matched in pairs and different treatments are given to each subject in the pair. The outcomes are thereafter compared pair-wise. 
+
+Alternatively, one can measure each subject twice, before and after a treatment. In either of these situations we can’t use two-sample t-tests since the independence assumption is not valid. Instead we need to use a paired t-test. This can be done using the option paired =TRUE.
+
+\section{Paired t-test}
+
+In paired t-tests, we examine the case wise differences in both data sets. 
+This procedure is of interest in studies with a “before / After” structure.  Both data sets must be of equal length. 
+
+\begin{quoatation} 
+Ho :  The average case-wise difference is zero
+Ha :  The average case-wise difference is not zero.
+\end{quotation}
+
+\begin{verbatim}
+# paired t-test
+# t.test(y1,y2,paired=TRUE)  where y1 & y2 are numeric and are of the same length.
+t.test(mod, unmod,paired=T)
+\end{verbatim}
+ 
+Another way of implementing the paired t-test is to first compute the vector of casewise differences, and then apply a simple one sample test.
+\begin{framed}
+\begin{verbatim}
+# t.test(y1-y2) # Ho: mu=0
+t.test(mod- unmod)
+\end{verbatim}
+ \end{framed}
+
+
+
+
+Ex. A study was performed to test whether cars get better mileage on premium gas than on regular gas. Each of 10 cars was first filled with either regular or premium gas, decided by a coin toss, and the mileage for that tank was recorded. The mileage was recorded again for the same cars using the other kind of gasoline. We use a paired t-test to determine whether cars get significantly better mileage with premium gas.
+
+Below is the relevant R-code:
+
+
+> reg = c(16, 20, 21, 22, 23, 22, 27, 25, 27, 28)
+> prem = c(19, 22, 24, 24, 25, 25, 26, 26, 28, 32)
+> t.test(prem,reg,alternative="greater", paired=TRUE)
+
+
+Paired t-test
+data: prem and reg
+t = 4.4721, df = 9, p-value = 0.000775
+alternative hypothesis: true difference in means is greater than 0
+
+
+
+The results show that the t-statistic is equal to 4.47 and the p-value is 0.00075. Since the p-value is very low, we reject the null hypothesis. There is strong evidence of a mean increase in gas mileage between regular and premium gasoline
+
+
