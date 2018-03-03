@@ -1,0 +1,20 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+plot(cars)
+```
+## 5. Plotting networks with igraph
+Plotting with igraph: the network plots have a wide set of parameters you can set. Those include node options (starting with  vertex.) and edge options (starting with edge.). A list of selected options is included below, but you can also check out  ?igraph.plotting for more information.
+
+ 
+
+The igraph plotting parameters include (among others):
+
+##

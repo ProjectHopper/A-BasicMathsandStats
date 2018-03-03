@@ -1,0 +1,150 @@
+---
+title: "iGraph-Materials-Part4"
+author: "Kevin.obrien"
+date: "March 3, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+4. Turning networks into igraph objects
+We start by converting the raw data to an igraph network object. Here we use igraph's graph.data.frame function, which takes two data frames: d and vertices.
+
+d describes the edges of the network. Its first two columns are the IDs of the source and the target node for each edge. The following columns are edge attributes (weight, type, label, or anything else).
+vertices starts with a column of node IDs. Any following columns are interpreted as node attributes.
+4.1 Dataset 1
+library(igraph)
+
+
+
+net <- graph_from_data_frame(d=links, vertices=nodes, directed=T) 
+
+class(net)
+## [1] "igraph"
+net
+## IGRAPH DNW- 17 49 -- 
+
+## + attr: name (v/c), media (v/c), media.type (v/n), type.label
+
+## | (v/c), audience.size (v/n), type (e/c), weight (e/n)
+
+## + edges (vertex names):
+
+##  [1] s01->s02 s01->s03 s01->s04 s01->s15 s02->s01 s02->s03 s02->s09
+
+##  [8] s02->s10 s03->s01 s03->s04 s03->s05 s03->s08 s03->s10 s03->s11
+
+## [15] s03->s12 s04->s03 s04->s06 s04->s11 s04->s12 s04->s17 s05->s01
+
+## [22] s05->s02 s05->s09 s05->s15 s06->s06 s06->s16 s06->s17 s07->s03
+
+## [29] s07->s08 s07->s10 s07->s14 s08->s03 s08->s07 s08->s09 s09->s10
+
+## [36] s10->s03 s12->s06 s12->s13 s12->s14 s13->s12 s13->s17 s14->s11
+
+## [43] s14->s13 s15->s01 s15->s04 s15->s06 s16->s06 s16->s17 s17->s04
+We also have easy access to nodes, edges, and their attributes with:
+
+E(net)       # The edges of the "net" object
+
+V(net)       # The vertices of the "net" object
+
+E(net)$type  # Edge attribute "type"
+
+V(net)$media # Vertex attribute "media"
+Now that we have our igraph network object, let's make a first attempt to plot it.
+
+plot(net, edge.arrow.size=.4,vertex.label=NA)
+
+
+That doesn't look very good. Let's start fixing things by removing the loops in the graph.
+
+net <- simplify(net, remove.multiple = F, remove.loops = T) 
+You might notice that we could have used simplify to combine multiple edges by summing their weights with a command like  simplify(net, edge.attr.comb=list(weight="sum","ignore")). The problem is that this would also combine multiple edge types (in our data: "hyperlinks" and "mentions").
+
+If you need them, you can extract an edge list or a matrix from igraph networks.
+
+as_edgelist(net, names=T)
+
+as_adjacency_matrix(net, attr="weight")
+Or data frames describing nodes and edges:
+
+as_data_frame(net, what="edges")
+
+as_data_frame(net, what="vertices")
+4.2 Dataset 2
+As we have seen above, this time the edges of the network are in a matrix format. We can read those into a graph object using  graph_from_incidence_matrix(). In igraph, bipartite networks have a node attribute called type that is FALSE (or 0) for vertices in one mode and TRUE (or 1) for those in the other mode.
+
+head(nodes2)
+##    id   media media.type media.name audience.size
+
+## 1 s01     NYT          1  Newspaper            20
+
+## 2 s02    WaPo          1  Newspaper            25
+
+## 3 s03     WSJ          1  Newspaper            30
+
+## 4 s04    USAT          1  Newspaper            32
+
+## 5 s05 LATimes          1  Newspaper            20
+
+## 6 s06     CNN          2         TV            56
+head(links2)
+##     U01 U02 U03 U04 U05 U06 U07 U08 U09 U10 U11 U12 U13 U14 U15 U16 U17
+
+## s01   1   1   1   0   0   0   0   0   0   0   0   0   0   0   0   0   0
+
+## s02   0   0   0   1   1   0   0   0   0   0   0   0   0   0   0   0   0
+
+## s03   0   0   0   0   0   1   1   1   1   0   0   0   0   0   0   0   0
+
+## s04   0   0   0   0   0   0   0   0   1   1   1   0   0   0   0   0   0
+
+## s05   0   0   0   0   0   0   0   0   0   0   1   1   1   0   0   0   0
+
+## s06   0   0   0   0   0   0   0   0   0   0   0   0   1   1   0   0   1
+
+##     U18 U19 U20
+
+## s01   0   0   0
+
+## s02   0   0   1
+
+## s03   0   0   0
+
+## s04   0   0   0
+
+## s05   0   0   0
+
+## s06   0   0   0
+net2 <- graph_from_incidence_matrix(links2)
+
+table(V(net2)$type)
+## 
+
+## FALSE  TRUE 
+
+##    10    20
+To transform a one-mode network matrix into an igraph object, use instead graph_from_adjacency_matrix().
+
+We can also easily generate bipartite projections for the two-mode network: (co-memberships are easy to calculate by multiplying the network matrix by its transposed matrix, or using igraph's bipartite.projection() function).
+
+net2.bp <- bipartite.projection(net2)
+We can calculate the projections manually as well:
+
+   as_incidence_matrix(net2)  %*% t(as_incidence_matrix(net2)) 
+
+ t(as_incidence_matrix(net2)) %*%   as_incidence_matrix(net2)
+plot(net2.bp$proj1, vertex.label.color="black", vertex.label.dist=1,
+
+     vertex.size=7, vertex.label=nodes2$media[!is.na(nodes2$media.type)])
+
+
+plot(net2.bp$proj2, vertex.label.color="black", vertex.label.dist=1,
+
+     vertex.size=7, vertex.label=nodes2$media[ is.na(nodes2$media.type)])
+
+

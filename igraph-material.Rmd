@@ -1,0 +1,302 @@
+---
+title: "iGraphNetwork"
+author: "Kevin.obrien"
+date: "March 3, 2018"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+##
+
+Network Analysis and Visualization with R and igraph
+
+##
+
+
+Small graphs can also be generated with a description of this kind: - for undirected tie, +- or -+ for directed ties pointing left & right, ++ for a symmetric tie, and ":" for sets of vertices.
+
+## 
+plot(graph_from_literal(a---b, b---c)) # the number of dashes doesn't matter
+
+
+plot(graph_from_literal(a--+b, b+--c))
+
+## 
+plot(graph_from_literal(a+-+b, b+-+c)) 
+
+
+plot(graph_from_literal(a:b:c---c:d:e))
+
+## 
+
+```{r}
+gl <- graph_from_literal(a-b-c-d-e-f, a-g-h-b, h-e:f:i, j)
+
+plot(gl)
+
+```
+## 2.2 Edge, vertex, and network attributes
+Access vertices and edges:
+```{r}
+E(g4) # The edges of the object
+## + 4/4 edges (vertex names):
+
+## [1] Alice->Barry  Barry ->Jack Barry ->Jack Alice->Alice
+V(g4) # The vertices of the object
+## + 7/7 vertices, named:
+
+## [1] Alice     Barry      Jack     Dermot    Janis    Jennifer Justin
+```
+You can also examine the network matrix directly:
+```{r}
+g4[]
+```
+## 
+
+7 x 7 sparse Matrix of class "dgCMatrix"
+
+```{r}
+##          Alice Barry Jack Dermot Janis Jennifer Justin
+
+## Alice        1   1    .     .     .        .      .
+
+## Barry         .   .    2     .     .        .      .
+
+## Jack        .   .    .     .     .        .      .
+
+## Dermot       .   .    .     .     .        .      .
+
+## Janis       .   .    .     .     .        .      .
+
+## Jennifer    .   .    .     .     .        .      .
+
+## Justin      .   .    .     .     .        .      .
+g4[1,] 
+##     Alice      Barry     Jack    Dermot    Janis Jennifer   Justin 
+
+##        1        1        0        0        0        0        0
+```
+##
+Add attributes to the network, vertices, or edges:
+```{r}
+V(g4)$name # automatically generated when we created the network.
+## [1] "Alice"     "Barry"      "Jack"     "Dermot"    "Janis"    "Jennifer"
+
+## [7] "Justin"
+V(g4)$gender <- c("male", "male", "male", "male", "female", "female", "male")
+
+E(g4)$type <- "email" # Edge attribute, assign "email" to all edges
+
+E(g4)$weight <- 10    # Edge weight, setting all existing edges to 10
+```
+##
+
+Examine attributes:
+
+```{r}
+edge_attr(g4)
+## $type
+
+## [1] "email" "email" "email" "email"
+```
+## 
+
+```{r}
+## $weight
+
+## [1] 10 10 10 10
+vertex_attr(g4)
+## $name
+
+## [1] "Alice"     "Barry"      "Jack"     "Dermot"    "Janis"    "Jennifer"
+
+## [7] "Justin"  
+```
+##
+
+```{r}
+## 
+
+## $gender
+
+## [1] "male"   "male"   "male"   "male"   "female" "female" "male"
+graph_attr(g4)
+## named list()
+```
+##
+
+Another way to set attributes (you can similarly use set_edge_attr(), set_vertex_attr(), etc.):
+```{r}
+g4 <- set_graph_attr(g4, "name", "Email Network")
+
+g4 <- set_graph_attr(g4, "something", "A thing")
+```
+##
+```{r}
+graph_attr_names(g4)
+## [1] "name"      "something"
+graph_attr(g4, "name")
+## [1] "Email Network"
+graph_attr(g4)
+## $name
+
+## [1] "Email Network"
+
+## 
+
+## $something
+```
+##
+```{r}
+## [1] "A thing"
+g4 <- delete_graph_attr(g4, "something")
+
+graph_attr(g4)
+## $name
+
+## [1] "Email Network"
+plot(g4, edge.arrow.size=.5, vertex.label.color="black", vertex.label.dist=1.5,
+```
+     vertex.color=c( "pink", "skyblue")[1+(V(g4)$gender=="male")] ) 
+##
+
+The graph g4 has two edges going from Barry to Jack, and a loop from Alice to himself. We can simplify our graph to remove loops & multiple edges between the same nodes. Use edge.attr.comb to indicate how edge attributes are to be combined - possible options include sum, mean, prod (product), min, max, first/last (selects the first/last edge's attribute). Option "ignore" says the attribute should be disregarded and dropped.
+
+## 
+g4s <- simplify( g4, remove.multiple = T, remove.loops = F, 
+
+                 edge.attr.comb=c(weight="sum", type="ignore") )
+
+plot(g4s, vertex.label.dist=1.5)
+
+##
+
+```{r}
+g4s
+## IGRAPH DNW- 7 3 -- Email Network
+
+## + attr: name (g/c), name (v/c), gender (v/c), weight (e/n)
+
+## + edges (vertex names):
+
+## [1] Alice->Alice Alice->Barry  Barry ->Jack
+```
+##
+
+The description of an igraph object starts with up to four letters:
+
+D or U, for a directed or undirected graph
+N for a named graph (where nodes have a name attribute)
+W for a weighted graph (where edges have a weight attribute)
+B for a bipartite (two-mode) graph (where nodes have a type attribute)
+The two numbers that follow (7 5) refer to the number of nodes and edges in the graph. The description also lists node & edge attributes, for example:
+
+## 
+(g/c) - graph-level character attribute
+(v/c) - vertex-level character attribute
+(e/n) - edge-level numeric attribute
+
+##
+2.3 Specific graphs and graph models
+Empty graph
+
+eg <- make_empty_graph(40)
+
+plot(eg, vertex.size=10, vertex.label=NA)
+
+##
+
+Full graph
+
+fg <- make_full_graph(40)
+
+plot(fg, vertex.size=10, vertex.label=NA)
+
+##
+
+Simple star graph
+
+st <- make_star(40)
+
+plot(st, vertex.size=10, vertex.label=NA) 
+
+##
+
+Tree graph
+
+tr <- make_tree(40, children = 3, mode = "undirected")
+
+plot(tr, vertex.size=10, vertex.label=NA) 
+
+##
+Ring graph
+
+rn <- make_ring(40)
+
+plot(rn, vertex.size=10, vertex.label=NA)
+
+## 
+Erdos-Renyi random graph model
+('n' is number of nodes, 'm' is the number of edges).
+
+er <- sample_gnm(n=100, m=40) 
+
+plot(er, vertex.size=6, vertex.label=NA)  
+## 
+
+Watts-Strogatz small-world model
+Creates a lattice (with dim dimensions and size nodes across dimension) and rewires edges randomly with probability p. The neighborhood in which edges are connected is nei. You can allow loops and multiple edges.
+
+sw <- sample_smallworld(dim=2, size=10, nei=1, p=0.1)
+
+plot(sw, vertex.size=6, vertex.label=NA, layout=layout_in_circle)
+
+## 
+
+Barabasi-Albert preferential attachment model for scale-free graphs
+(n is number of nodes, power is the power of attachment (1 is linear); m is the number of edges added on each time step)
+
+ ba <-  sample_pa(n=100, power=1, m=1,  directed=F)
+
+ plot(ba, vertex.size=6, vertex.label=NA)
+
+## 
+
+igraph can also give you some notable historical graphs. For instance:
+
+ zach <- graph("Zachary") # the Zachary carate club
+
+ plot(zach, vertex.size=10, vertex.label=NA)
+
+## 
+Rewiring a graph
+each_edge() is a rewiring method that changes the edge endpoints uniformly randomly with a probability prob.
+
+ rn.rewired <- rewire(rn, each_edge(prob=0.1))
+
+ plot(rn.rewired, vertex.size=10, vertex.label=NA)
+
+
+Rewire to connect vertices to other vertices at a certain distance.
+
+ rn.neigh = connect.neighborhood(rn, 5)
+
+ plot(rn.neigh, vertex.size=8, vertex.label=NA) 
+
+
+Combine graphs (disjoint union, assuming separate vertex sets): %du%
+
+ plot(rn, vertex.size=10, vertex.label=NA) 
+
+
+ plot(tr, vertex.size=10, vertex.label=NA) 
+
+
+ plot(rn %du% tr, vertex.size=10, vertex.label=NA) 
+
+
+
+     
