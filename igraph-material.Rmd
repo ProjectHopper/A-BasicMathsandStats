@@ -19,17 +19,19 @@ Network Analysis and Visualization with R and igraph
 Small graphs can also be generated with a description of this kind: - for undirected tie, +- or -+ for directed ties pointing left & right, ++ for a symmetric tie, and ":" for sets of vertices.
 
 ## 
+```{r}
 plot(graph_from_literal(a---b, b---c)) # the number of dashes doesn't matter
 
 
 plot(graph_from_literal(a--+b, b+--c))
-
+```
 ## 
+```{r}
 plot(graph_from_literal(a+-+b, b+-+c)) 
 
 
 plot(graph_from_literal(a:b:c---c:d:e))
-
+```
 ## 
 
 ```{r}
@@ -163,15 +165,18 @@ plot(g4, edge.arrow.size=.5, vertex.label.color="black", vertex.label.dist=1.5,
      vertex.color=c( "pink", "skyblue")[1+(V(g4)$gender=="male")] ) 
 ##
 
-The graph g4 has two edges going from Barry to Jack, and a loop from Alice to himself. We can simplify our graph to remove loops & multiple edges between the same nodes. Use edge.attr.comb to indicate how edge attributes are to be combined - possible options include sum, mean, prod (product), min, max, first/last (selects the first/last edge's attribute). Option "ignore" says the attribute should be disregarded and dropped.
+The graph g4 has two edges going from Barry to Jack, and a loop from Alice to himself. We can simplify our graph to remove loops & multiple edges between the same nodes. ``Use edge.attr.comb`` to indicate how edge attributes are to be combined - possible options include sum, mean, prod (product), min, max, first/last (selects the first/last edge's attribute). 
+
+Option "ignore" says the attribute should be disregarded and dropped.
 
 ## 
+```{r}
 g4s <- simplify( g4, remove.multiple = T, remove.loops = F, 
 
                  edge.attr.comb=c(weight="sum", type="ignore") )
 
 plot(g4s, vertex.label.dist=1.5)
-
+```
 ##
 
 ```{r}
@@ -188,10 +193,11 @@ g4s
 
 The description of an igraph object starts with up to four letters:
 
-D or U, for a directed or undirected graph
-N for a named graph (where nodes have a name attribute)
-W for a weighted graph (where edges have a weight attribute)
-B for a bipartite (two-mode) graph (where nodes have a type attribute)
+* D or U, for a directed or undirected graph
+* N for a named graph (where nodes have a name attribute)
+* W for a weighted graph (where edges have a weight attribute)
+* B for a bipartite (two-mode) graph (where nodes have a type attribute)
+
 The two numbers that follow (7 5) refer to the number of nodes and edges in the graph. The description also lists node & edge attributes, for example:
 
 ## 
@@ -200,7 +206,8 @@ The two numbers that follow (7 5) refer to the number of nodes and edges in the 
 (e/n) - edge-level numeric attribute
 
 ##
-2.3 Specific graphs and graph models
+
+### 2.3 Specific graphs and graph models
 Empty graph
 
 eg <- make_empty_graph(40)
@@ -218,26 +225,26 @@ plot(fg, vertex.size=10, vertex.label=NA)
 ##
 
 Simple star graph
-
+```{r}
 st <- make_star(40)
 
 plot(st, vertex.size=10, vertex.label=NA) 
-
+```
 ##
 
 Tree graph
-
+```{r}
 tr <- make_tree(40, children = 3, mode = "undirected")
 
 plot(tr, vertex.size=10, vertex.label=NA) 
-
+```
 ##
 Ring graph
-
+```{r}
 rn <- make_ring(40)
 
 plot(rn, vertex.size=10, vertex.label=NA)
-
+```
 ## 
 Erdos-Renyi random graph model
 ('n' is number of nodes, 'm' is the number of edges).
@@ -258,45 +265,47 @@ plot(sw, vertex.size=6, vertex.label=NA, layout=layout_in_circle)
 
 Barabasi-Albert preferential attachment model for scale-free graphs
 (n is number of nodes, power is the power of attachment (1 is linear); m is the number of edges added on each time step)
-
+```{r}
  ba <-  sample_pa(n=100, power=1, m=1,  directed=F)
 
  plot(ba, vertex.size=6, vertex.label=NA)
-
+```
 ## 
 
 igraph can also give you some notable historical graphs. For instance:
-
+```{r}
  zach <- graph("Zachary") # the Zachary carate club
 
  plot(zach, vertex.size=10, vertex.label=NA)
-
+```
 ## 
-Rewiring a graph
-each_edge() is a rewiring method that changes the edge endpoints uniformly randomly with a probability prob.
-
+### Rewiring a graph
+``each_edge()`` is a rewiring method that changes the edge endpoints uniformly randomly with a probability prob.
+```{r}
  rn.rewired <- rewire(rn, each_edge(prob=0.1))
 
  plot(rn.rewired, vertex.size=10, vertex.label=NA)
-
+```
 
 Rewire to connect vertices to other vertices at a certain distance.
-
+```{r}
  rn.neigh = connect.neighborhood(rn, 5)
 
  plot(rn.neigh, vertex.size=8, vertex.label=NA) 
-
+```
 
 Combine graphs (disjoint union, assuming separate vertex sets): %du%
-
+```{r}
  plot(rn, vertex.size=10, vertex.label=NA) 
 
-
+```
  plot(tr, vertex.size=10, vertex.label=NA) 
 
+##
 
+```{r}
  plot(rn %du% tr, vertex.size=10, vertex.label=NA) 
 
-
+```
 
      
